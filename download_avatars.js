@@ -10,6 +10,10 @@ var request = require('request');
 var token = require("./secrets");
 var fs = require('fs');
 
+var owner = process.argv[2];
+var repo = process.argv[3];
+console.log(owner, repo);
+
 //function that retrieves the repo conributors for a given repo
 function getRepoContributors(repoOwner, repoName, cb) {
   // creates the request options
@@ -46,7 +50,7 @@ function downloadImageByURL(url, filePath) {
 // calls the getRepoContributors function, passing in a repo owner & name
 // logs errors
 // logs the avatar urls for each contributor
-getRepoContributors("jquery", "jquery", function (err, result) {
+getRepoContributors(owner, repo, function (err, result) {
   console.log("Errors:", err);
   var contributor = result[0];
   result.forEach(function (contributor) {
@@ -56,4 +60,3 @@ getRepoContributors("jquery", "jquery", function (err, result) {
   });
 });
 
-// console.log(downloadImageByURL("https://avatars2.githubusercontent.com/u/2741?v=3&s=466", "avatars/kvirani.jpg"));
