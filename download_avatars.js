@@ -1,7 +1,14 @@
+// getRepoContributors makes a request for JSON, getting back an array of contributors.
+// getRepoContributors passes this data to cb, an anonymous callback function that it is given.
+// cb loops through each item in the array:
+// It constructs a file path using the login value(e.g., "avatars/dhh.jpg")
+// It then passes the avatar_url value and the file path to downloadImageByURL
+// downloadImageByURL fetches the desired avatar_url and saves this information to the given filePath
+
+
 var request = require('request');
 var token = require("./secrets");
 var fs = require('fs');
-var avatarArray = [];
 
 //function that retrieves the repo conributors for a given repo
 function getRepoContributors(repoOwner, repoName, cb) {
@@ -21,21 +28,6 @@ function getRepoContributors(repoOwner, repoName, cb) {
   });
 }
 
-// calls the getRepoContributors function, passing in a repo owner & name
-// logs errors
-// logs the avatar urls for each contributor
-getRepoContributors("jquery", "jquery", function (err, result) {
-  console.log("Errors:", err);
-  var contributor = result[0];
-  result.forEach(function (contributor) {
-    var userAvatar = {};
-    userAvatar[contributor.login] = contributor.avatar_url
-    avatarArray.push(userAvatar);
-  });
-  return avatarArray;
-});
-
-
 //downloads the avatar images using the url
 function downloadImageByURL(url, filePath) {
   request.get(url)
@@ -51,4 +43,17 @@ function downloadImageByURL(url, filePath) {
     });
 }
 
-console.log(downloadImageByURL("https://avatars2.githubusercontent.com/u/2741?v=3&s=466", "avatars/kvirani.jpg"));
+// calls the getRepoContributors function, passing in a repo owner & name
+// logs errors
+// logs the avatar urls for each contributor
+getRepoContributors("jquery", "jquery", function (err, result) {
+  console.log("Errors:", err);
+  var contributor = result[0];
+  result.forEach(function (contributor) {
+    var filePath = './avatars/' + contributor.login + '.jpg';
+    var url = contributor.avatar_url
+    downloadImageByURL(url, filePath);
+  });
+});
+
+// console.log(downloadImageByURL("https://avatars2.githubusercontent.com/u/2741?v=3&s=466", "avatars/kvirani.jpg"));
